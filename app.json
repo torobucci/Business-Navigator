@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Business-Navigator",
+    "slug": "Business-Navigator",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kevintoro.businessnavigator",
+      "googleServicesFile": "./GoogleService-info.plist"
+    },
+    "android": {
+      "googleServicesFile":"./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.kevintoro.businessnavigator"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "47f24c7d-4a48-4137-be8f-0038c84d55b8"
+      }
+    },
+    "plugins":[
+      ["expo-build-properties"]
+    ],
+    "scheme": "businessnavigator"
+
+  }
+}
