@@ -2,6 +2,7 @@
   "expo": {
     "name": "Business-Navigator",
     "slug": "Business-Navigator",
+    "scheme": ["businessnavigator"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -16,16 +17,14 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.kevintoro.businessnavigator",
-      "googleServicesFile": "./GoogleService-info.plist"
+      "bundleIdentifier": "com.kevintoro.businessnavigator"
     },
     "android": {
-      "googleServicesFile":"./google-services.json",
+      "package": "com.kevintoro.businessnavigator",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.kevintoro.businessnavigator"
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -36,9 +35,10 @@
       }
     },
     "plugins":[
-      ["expo-build-properties"]
-    ],
-    "scheme": "businessnavigator"
+      ["expo-build-properties"],
+      ["@react-native-google-signin/google-signin"]
+    ]
 
   }
 }
+

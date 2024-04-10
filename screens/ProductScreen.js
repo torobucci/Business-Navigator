@@ -2,13 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Button, StyleSheet, Image } from 'react-native';
 import { ref, onValue } from 'firebase/database';
 import { database } from '../firebaseConfig';
+import Modal from 'react-native-modal';
+import { BlurView } from "expo-blur";
+import NewProductScreen from './NewProductScreen';
+import { useSelector } from 'react-redux';
 
-const StockScreen = ({ navigation }) => {
+const ProductScreen = ({ navigation, route }) => {
   const [products, setProducts] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const { userId } = route.params
+  const shopId = useSelector((state) => state.shopId.shopId);
 
   useEffect(() => {
     // Subscribe to real-time updates from the database
-    const dbRef = ref(database, 'users/1/shops/11/products');
+    const dbRef = ref(database, `users/${userId}/shops/${shopId}/products`);
 
     const handleData = (snapshot) => {
       if (snapshot.exists()) {
@@ -39,6 +47,7 @@ const StockScreen = ({ navigation }) => {
         <View>
           <Text style={styles.stockQuantity}>{`Buying Price: ${item.buyingPrice}`}</Text>
           <Text style={styles.stockQuantity}>{`Selling Price: ${item.sellingPrice}`}</Text>
+          <Text style={styles.stockQuantity}>{`Available Stock: ${item.stockQuantity}`}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -49,9 +58,13 @@ const StockScreen = ({ navigation }) => {
     // You may also pass the product data to the details screen
   };
 
-  const navigateToNewStock = () => {
+  const navigateToNewProduct = () => {
     // Navigate to the "New Stock" screen (modal)
-    navigation.navigate('NewStock');
+    navigation.navigate('NewProduct');
+  };
+
+  const toggleModal = () => {
+    setIsModalVisible(!isModalVisible);
   };
 
   return (
@@ -61,12 +74,16 @@ const StockScreen = ({ navigation }) => {
       ) : (
         <FlatList
           data={products}
-          keyExtractor={(item) => item.name.toString()}
+          keyExtractor={(item) => item.name}
           renderItem={renderStockItem}
         />
       )}
-
-      <Button title="Create Product" onPress={navigateToNewStock} />
+      <Modal isVisible={isModalVisible} animationIn="slideInUp" animationOut="slideOutDown">
+        <BlurView intensity={100} style={StyleSheet.absoluteFill}>
+          <NewProductScreen isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}></NewProductScreen>
+        </BlurView>
+      </Modal>
+      <Button title="Create Product" onPress={toggleModal} />
     </View>
   );
 };
@@ -76,6 +93,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: '#f5f5f5',
+  },
+  blurContainer: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   stockItem: {
     backgroundColor: '#fff',
@@ -106,4 +131,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default StockScreen;
+export default ProductScreen;

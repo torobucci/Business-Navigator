@@ -2,18 +2,26 @@ import React, { useState } from 'react';
 import { Text, TextInput, Button, StyleSheet, ScrollView, Image, Platform } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { database, storage } from '../firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { push, ref as databaseRef } from 'firebase/database';
+import { useSelector } from 'react-redux';
 
-const NewProductScreen = ({ navigation }) => {
+const NewProductScreen = ({ route, isModalVisible, setIsModalVisible }) => {
   const [productName, setProductName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [buyingPrice, setBuyingPrice] = useState('');
   const [sellingPrice, setSellingPrice] = useState('');
   const [measuringUnit, setMeasuringUnit] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
-  const [estimatedProfit, setEstimatedProfit] = useState('');
   const [category, setCategory] = useState('');
   const [subCategory, setSubCategory] = useState('');
+  const [stockQuantity, setStockQuantity] = useState('');
   const [image, setImage] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
+
+  const { userId } = route.params
+
+  const shopId = useSelector((state) => state.shopId.shopId);
 
   const handleImagePicker = async () => {
     if (Platform.OS !== 'web') {
@@ -29,79 +37,100 @@ const NewProductScreen = ({ navigation }) => {
         quality: 1,
       });
 
-      if (!result.cancelled) {
-        setImage(result.uri);
+      if (!result.canceled) {
+        setImage(result.assets[0].uri);
       }
+    }
+  };
+
+  const handleImageChange = (event) => {
+    // Get the selected file from the input element
+    const selectedFile = event.target.files[0];
+
+    if (selectedFile) {
+      // Read the selected file as a data URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
     }
   };
 
   const handleSaveNewProduct = async () => {
     // Validate form inputs
     if (!productName || !quantity || !buyingPrice || !sellingPrice || !measuringUnit ||
-        !expiryDate || !estimatedProfit || !category || !subCategory || !image) {
+      !expiryDate || !category || !subCategory || !image || !stockQuantity) {
       alert('Please fill in all fields.');
       return;
     }
 
-    // Upload the image to Firebase Storage
-    const response = await fetch(image);
-    const blob = await response.blob();
-    const imageName = `product_${Date.now()}.jpg`;
-    const storageRef = storage.ref().child(`images/${imageName}`);
-
     try {
-      await storageRef.put(blob);
-      const imageUrl = await storageRef.getDownloadURL();
+      // Upload the image to Firebase Storage
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const imageName = `product_${Date.now()}.jpg`;
+      const storageRef = ref(storage, `images/${imageName}`);
+      await uploadBytes(storageRef, blob);
+
+      // Get the download URL
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // Set the imageUrl state
+      setImageUrl(downloadURL);
 
       // Insert the new product into the database
-      const productsRef = database.ref('users/1/shops/11/products');
-
-      const newProduct = {
+      push(databaseRef(database, `users/${userId}/shops/${shopId}/products`), {
         name: productName,
         quantity: parseInt(quantity, 10),
         buyingPrice: parseFloat(buyingPrice),
         sellingPrice: parseFloat(sellingPrice),
         measuringUnit: measuringUnit,
         expiryDate: expiryDate, // You may want to parse this date string
-        estimatedProfit: parseFloat(estimatedProfit),
+        estimatedProfit: parseFloat(sellingPrice - buyingPrice),
         category: category,
         subCategory: subCategory,
-        imageUrl: imageUrl, // Add the imageUrl to the product data
-        // Add other properties based on your data model
-      };
+        imageUrl: downloadURL,
+        stockQuantity: stockQuantity// Use the obtained downloadURL directly
+      }).then(() => {
+        // Clear form fields after saving
+        setProductName('');
+        setQuantity('');
+        setBuyingPrice('');
+        setSellingPrice('');
+        setMeasuringUnit('');
+        setExpiryDate('');
+        setCategory('');
+        setSubCategory('');
+        setImage(null);
 
-      productsRef.push(newProduct)
-        .then(() => {
-          // Clear form fields after saving
-          setProductName('');
-          setQuantity('');
-          setBuyingPrice('');
-          setSellingPrice('');
-          setMeasuringUnit('');
-          setExpiryDate('');
-          setEstimatedProfit('');
-          setCategory('');
-          setSubCategory('');
-          setImage(null);
+        // Navigate back or close the modal after saving
+        // navigation.goBack();
+        toggleModal()
+      }).catch((error) => {
+        console.error('Error saving new product:', error);
+        alert('Error saving new product.');
+      });
 
-          // Navigate back or close the modal after saving
-          navigation.goBack();
-        })
-        .catch((error) => {
-          console.error('Error saving new product:', error);
-          alert('Error saving new product.');
-        });
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Error uploading image.');
     }
+  };
+  const toggleModal = () => {
+    // Call the function from props to update the state in the parent component
+    setIsModalVisible(false);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>New Product Screen</Text>
       {image && <Image source={{ uri: image }} style={styles.imagePreview} />}
-      <Button title="Select Image" onPress={handleImagePicker} />
+      {Platform.OS !== 'web' ? (
+        <Button title="Select Image" onPress={handleImagePicker} />
+      ) : (
+        <input type="file" accept="image/*" onChange={handleImageChange} />
+      )}
       <TextInput
         style={styles.input}
         placeholder="Product Name"
@@ -143,13 +172,6 @@ const NewProductScreen = ({ navigation }) => {
       />
       <TextInput
         style={styles.input}
-        placeholder="Estimated Profit"
-        keyboardType="numeric"
-        value={estimatedProfit}
-        onChangeText={(text) => setEstimatedProfit(text)}
-      />
-      <TextInput
-        style={styles.input}
         placeholder="Category"
         value={category}
         onChangeText={(text) => setCategory(text)}
@@ -160,7 +182,16 @@ const NewProductScreen = ({ navigation }) => {
         value={subCategory}
         onChangeText={(text) => setSubCategory(text)}
       />
-      <Button title="Save New Product" onPress={handleSaveNewProduct} />
+      <TextInput
+        style={styles.input}
+        placeholder="Stock Quantity"
+        keyboardType="numeric"
+        value={stockQuantity}
+        onChangeText={(text) => setStockQuantity(text)}
+      />
+      <Text>{isModalVisible}</Text>
+     <Button title="Create new Product" onPress={handleSaveNewProduct} />
+     <Button title="Cancel" onPress={toggleModal} />
     </ScrollView>
   );
 };
