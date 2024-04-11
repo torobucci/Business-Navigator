@@ -11,7 +11,7 @@ const HomeScreen = ({ route }) => {
   const [sales, setSales] = useState('')
   const [profits, setProfits] = useState('')
   const hexCharacters = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "A", "B", "C", "D", "E", "F"]
-  const [showCreateOptions, setShowCreateOptions] = useState(false); // State to control the visibility of creation options
+  const [showCreateOptions, setShowCreateOptions] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const handleFloatingButtonClick = () => {
     setShowCreateOptions(!showCreateOptions);
@@ -35,10 +35,10 @@ const HomeScreen = ({ route }) => {
     return hexColorRep
   }
   const chartConfig = {
-    backgroundColor: '#1DA1F2', // Twitter blue bird color
-    backgroundGradientFrom: '#A9D0F5', // Light blue gradient start
-    backgroundGradientTo: '#87CEFA', // Light blue gradient end
-    decimalPlaces: 2, // optional, defaults to 2dp
+    backgroundColor: '#1DA1F2',
+    backgroundGradientFrom: '#A9D0F5',
+    backgroundGradientTo: '#87CEFA',
+    decimalPlaces: 2,
     color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     style: {
       borderRadius: 16
@@ -82,15 +82,13 @@ const HomeScreen = ({ route }) => {
   }
 
   const productSalesCountMap = {};
-  // Iterate over each sale in the saleData array
+
   sales ? sales.forEach((sale) => {
     const { productName, quantity } = sale;
 
-    // If productId exists in the map, add the quantity to the existing count
     if (productSalesCountMap[productName]) {
       productSalesCountMap[productName] += quantity;
     } else {
-      // If productId does not exist in the map, initialize the count with quantity
       productSalesCountMap[productName] = quantity;
     }
   }) : '';
@@ -100,7 +98,7 @@ const HomeScreen = ({ route }) => {
       {
         data: Object.values(productSalesCountMap),
         color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-        strokeWidth: 2 // optional
+        strokeWidth: 2
       }
     ],
   };
@@ -110,11 +108,10 @@ const HomeScreen = ({ route }) => {
     if (profit.origin == 'sales') {
       const { productName, profitAmount } = profit;
 
-      // If productId exists in the map, add the quantity to the existing count
+
       if (productProfitsCountMap[productName]) {
         productProfitsCountMap[productName] += profitAmount;
       } else {
-        // If productId does not exist in the map, initialize the count with quantity
         productProfitsCountMap[productName] = profitAmount;
       }
     }
@@ -135,8 +132,9 @@ const HomeScreen = ({ route }) => {
     <>
       <ScrollView>
         <View style={styles.container}>
-          <Text>Welcome to Home screen {sales.length}</Text>
+
           {sales.length > 0 && profits.length > 0 ? <>
+            <Text>Product with the most sales</Text>
             <LineChart
               data={salesData}
               width={screenWidth}
@@ -148,6 +146,7 @@ const HomeScreen = ({ route }) => {
                 borderRadius: 16
               }}
             />
+            <Text>Product with the most profit</Text>
             <PieChart
               data={profitsData}
               width={400}
@@ -164,22 +163,17 @@ const HomeScreen = ({ route }) => {
           }
 
         </View>
-        {/* Show/hide creation options */}
-
-        {/* Floating button */}
-
       </ScrollView>
       {showCreateOptions && (
-          <View style={styles.createOptionsContainer}>
-            {/* Your creation options */}
-            <TouchableOpacity onPress={() =>{ setModalVisible(true); setShowCreateOptions(false)} }>
-              <Text>Create Shop</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleFloatingButtonClick}>
-              <Text style={styles.createOption}>x</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        <View style={styles.createOptionsContainer}>
+          <TouchableOpacity onPress={() => { setModalVisible(true); setShowCreateOptions(false) }}>
+            <Text>Create Shop</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleFloatingButtonClick}>
+            <Text style={styles.createOption}>x</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <TouchableOpacity style={styles.floatingButton} onPress={handleFloatingButtonClick}>
         <Text style={styles.floatingButtonText}>+</Text>
       </TouchableOpacity>
@@ -189,7 +183,7 @@ const HomeScreen = ({ route }) => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <NewShop userId={userId} setModalVisible={setModalVisible}/>
+        <NewShop userId={userId} setModalVisible={setModalVisible} />
       </Modal>
     </>
   );
@@ -209,36 +203,36 @@ const styles = StyleSheet.create({
   },
   createOptionsContainer: {
     position: 'absolute',
-    bottom: 100, // Adjust as needed
-    right: 20, // Adjust as needed
+    bottom: 100,
+    right: 20,
     backgroundColor: 'white',
     borderRadius: 10,
     padding: 10,
-    elevation: 5, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
-    shadowOpacity: 0.25, // Shadow for iOS
-    shadowRadius: 3.84, // Shadow for iOS
-    display:'flex',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 20, // Adjust as needed
-    right: 20, // Adjust as needed
+    bottom: 20,
+    right: 20,
     backgroundColor: '#1DA1F2',
     borderRadius: 30,
     width: 60,
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
-    shadowOpacity: 0.25, // Shadow for iOS
-    shadowRadius: 3.84, // Shadow for iOS
+    elevation: 5,
+    shadowColor: '#000', 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.25, 
+    shadowRadius: 3.84, 
   },
   floatingButtonText: {
     color: 'white',

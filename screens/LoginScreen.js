@@ -1,4 +1,3 @@
-// LoginScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { auth, database } from '../firebaseConfig';
@@ -98,43 +97,36 @@ const LoginScreen = ({ setUserId }) => {
 
     const handleAuthentication = async () => {
         try {
-            if (user) {
-                // If user is already authenticated, log out
-                console.log(user);
-                // await signOut(auth);
+            if (isLogin) {
+                // Sign in
+                try {
+                    await signInWithEmailAndPassword(auth, email, password);
+                    console.log('User signed in successfully!');
+                }
+                catch (error) {
+                    alert(error)
+                }
             } else {
-                // Sign in or sign up
-                if (isLogin) {
-                    // Sign in
-                    try {
-                        await signInWithEmailAndPassword(auth, email, password);
-                        console.log('User signed in successfully!');
-                    }
-                    catch (error) {
-                        alert(error)
-                    }
-                } else {
-                    // Sign up
-                    try {
-                        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                        const user = userCredential.user;
+                // Sign up
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    const user = userCredential.user;
 
-                        const userName = user.email.split('@')[0]
+                    const userName = user.email.split('@')[0]
 
 
-                        await updateProfile(user, {
-                            displayName: userName
-                        });
+                    await updateProfile(user, {
+                        displayName: userName
+                    });
 
-                        await createUserProfile(user.uid, { email: user.email, username: userName });
-
-                    }
-                    catch (error) {
-                        alert(error)
-                        console.log(error)
-                    }
+                    await createUserProfile(user.uid, { email: user.email, username: userName });
 
                 }
+                catch (error) {
+                    alert(error)
+                    console.log(error)
+                }
+
             }
         } catch (error) {
             console.error('Authentication error:', error.message);

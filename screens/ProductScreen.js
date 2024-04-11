@@ -15,7 +15,6 @@ const ProductScreen = ({ navigation, route }) => {
   const shopId = useSelector((state) => state.shopId.shopId);
 
   useEffect(() => {
-    // Subscribe to real-time updates from the database
     const dbRef = ref(database, `users/${userId}/shops/${shopId}/products`);
 
     const handleData = (snapshot) => {
@@ -30,7 +29,7 @@ const ProductScreen = ({ navigation, route }) => {
     onValue(dbRef, handleData);
 
     return () => {
-      // Unsubscribe from real-time updates when the component unmounts
+
       onValue(dbRef, handleData);
     };
   }, []);
@@ -53,9 +52,8 @@ const ProductScreen = ({ navigation, route }) => {
     </TouchableOpacity>
   );
 
-  const navigateToStockDetails = (product) => {
-    // Add navigation logic to navigate to the product details screen
-    // You may also pass the product data to the details screen
+  const navigateToProductDetails = (product) => {
+  
   };
 
   const navigateToNewProduct = () => {
@@ -80,7 +78,7 @@ const ProductScreen = ({ navigation, route }) => {
       )}
       <Modal isVisible={isModalVisible} animationIn="slideInUp" animationOut="slideOutDown">
         <BlurView intensity={100} style={StyleSheet.absoluteFill}>
-          <NewProductScreen isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}></NewProductScreen>
+          <NewProductScreen userId={userId} shopId={shopId} isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible}></NewProductScreen>
         </BlurView>
       </Modal>
       <Button title="Create Product" onPress={toggleModal} />

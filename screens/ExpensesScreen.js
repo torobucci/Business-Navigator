@@ -8,12 +8,11 @@ import { useSelector } from 'react-redux';
 
 const ExpensesScreen = ({ route }) => {
   const [expenses, setExpenses] = useState('')
-  const [products, setProducts] = useState([]); // Array to store product data
+  const [products, setProducts] = useState([]);
   const [quantity, setQuantity] = useState('');
   const [sellingPrice, setSellingPrice] = useState('');
-  const [paymentType, setPaymentType] = useState(''); // Default payment type
+  const [paymentType, setPaymentType] = useState('');
   const [isModalVisible, setModalVisible] = useState(false);
-  //
   const [name, setName] = useState('');
   const [type, setType] = useState('');
   const [description, setDescription] = useState('');
@@ -31,7 +30,7 @@ const ExpensesScreen = ({ route }) => {
   const expenseTypes = ['stock', 'salaries', 'rent', 'other']
 
   const paymentTypes = ['cash', 'Mpesa', 'loan']
-  // Fetch product data on component mount
+
   useEffect(() => {
     const fetchExpensesAndProducts = async () => {
       // Fetch expenses data
@@ -85,7 +84,6 @@ const ExpensesScreen = ({ route }) => {
 
   // Handle expense creation
   const handleCreateExpense = async () => {
-    // check if the form is filled correctly
     if (isStockExpense) {
       if (updateStock) {
         if (!name || !description || !amount || !type || !quantity || !sellingPrice || !buyingPrice || !selectedProduct) {

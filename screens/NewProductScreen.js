@@ -4,9 +4,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { database, storage } from '../firebaseConfig';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { push, ref as databaseRef } from 'firebase/database';
-import { useSelector } from 'react-redux';
 
-const NewProductScreen = ({ route, isModalVisible, setIsModalVisible }) => {
+
+const NewProductScreen = ({ userId, shopId, isModalVisible, setIsModalVisible }) => {
   const [productName, setProductName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [buyingPrice, setBuyingPrice] = useState('');
@@ -18,10 +18,6 @@ const NewProductScreen = ({ route, isModalVisible, setIsModalVisible }) => {
   const [stockQuantity, setStockQuantity] = useState('');
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState('');
-
-  const { userId } = route.params
-
-  const shopId = useSelector((state) => state.shopId.shopId);
 
   const handleImagePicker = async () => {
     if (Platform.OS !== 'web') {

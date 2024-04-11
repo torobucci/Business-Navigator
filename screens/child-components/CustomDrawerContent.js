@@ -16,10 +16,7 @@ const CustomDrawerContent = ({ navigation }) => {
   const shopId = useSelector((state) => state.shopId.shopId)
   const dispatch = useDispatch()
 
-
-
   const handleShopSelection = (shopId) => {
-    // Handle shop selection logic here
     dispatch(setShopId(shopId));
   };
 
