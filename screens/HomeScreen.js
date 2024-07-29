@@ -87,11 +87,12 @@ const HomeScreen = ({ route }) => {
     const { productName, quantity } = sale;
 
     if (productSalesCountMap[productName]) {
-      productSalesCountMap[productName] += quantity;
+      productSalesCountMap[productName] += parseInt(quantity);
     } else {
-      productSalesCountMap[productName] = quantity;
+      productSalesCountMap[productName] = parseInt(quantity);
     }
   }) : '';
+
   const salesData = {
     labels: Object.keys(productSalesCountMap),
     datasets: [
@@ -229,10 +230,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
-    shadowColor: '#000', 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.25, 
-    shadowRadius: 3.84, 
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   floatingButtonText: {
     color: 'white',

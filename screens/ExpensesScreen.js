@@ -242,7 +242,7 @@ const ExpensesScreen = ({ route }) => {
           style={styles.picker}
           mode='dropdown'
         >
-          <Picker.Item label="Select product to be sold" value="" style={styles.pickerPlaceholder} />
+          <Picker.Item label="Select product to be bought" value="" style={styles.pickerPlaceholder} />
           {products.map((product) => (
             <Picker.Item key={product.id} label={product.name} value={product.name} />
           ))}

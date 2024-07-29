@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     padding: 10,
-    marginTop: 20,
+    marginTop: 60,
     backgroundColor: '#eee',
     alignItems: 'center',
     width: 1,

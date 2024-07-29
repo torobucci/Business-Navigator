@@ -34,7 +34,7 @@ export const fetchShops = (userId, database, onValue, ref) => (dispatch,getState
     const { shopId } = getState().shopId;
 
     // Set shopId if it's not already set
-    if (shopId.length === 0) {
+    if (allShops.length > 0 && shopId.length === 0) {
       dispatch(setShopId(allShops[0].id));
     }
   });

@@ -20,6 +20,7 @@ const SalesScreen = ({ route }) => {
 
   const { userId } = route.params
   const shopId = useSelector((state) => state.shopId.shopId);
+  console.log(userId,shopId)
   const paymentTypes = ['cash', 'Mpesa', 'loan']
   // Fetch product data on component mount
   useEffect(() => {
@@ -121,16 +122,16 @@ const SalesScreen = ({ route }) => {
           actualAmountSoldFor: sellingPrice,
           lossPerQuantity: selectedProductDetails.buyingPrice - sellingPrice,
           quantitySold: quantity,// Use retrieved product name
-          lossAmount: Math.abs(profitLoss) * quantity, // Calculate absolute loss
+          lossAmount: Math.abs(profitLoss) * parseInt(quantity), // Calculate absolute loss
           customerSoldTo: customerName,
           origin: 'sales'
         };
         setLosses(loss);
+        console.log(loss)
 
         // Push loss data to database (shops/shopId/losses)
-        const shopLossesRef = `users/${userId}/shops/${shopId}/losses`;
-        push(shopLossesRef, loss);
-      }
+        const shopLossesRef = ref(database, `users/${userId}/shops/${shopId}/losses`)
+        push(shopLossesRef, loss);}
     }
     if (paymentType === 'loan') {
       // Create loan data
