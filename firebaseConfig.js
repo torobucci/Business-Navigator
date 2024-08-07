@@ -13,16 +13,22 @@ import { getStorage} from "firebase/storage";
 
 // Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyCijTDaAG_AXjtuoI-uCmHu0NUrzGzDcNY",
-    authDomain: "business-navigator-414915.firebaseapp.com",
-    databaseURL: "https://business-navigator-414915-default-rtdb.firebaseio.com",
-    projectId: "business-navigator-414915",
-    storageBucket: "business-navigator-414915.appspot.com",
-    messagingSenderId: "385170174146",
-    appId: "1:385170174146:web:2dd90612265fa1518fcb5b",
-    measurementId: "G-0BHE08LWKK",
-    databaseURL: "https://business-navigator-414915-default-rtdb.firebaseio.com/",
-  };
+
+  apiKey: "AIzaSyCDWFnHOqMgUw01dTxDZJ346AVL3Mvq15U",
+
+  authDomain: "business-navigator-306bf.firebaseapp.com",
+
+  databaseURL: "https://business-navigator-306bf-default-rtdb.firebaseio.com",
+
+  projectId: "business-navigator-306bf",
+
+  storageBucket: "business-navigator-306bf.appspot.com",
+
+  messagingSenderId: "986145763338",
+
+  appId: "1:986145763338:web:84768d47e36c579580eff3"
+
+};
 
 const app = initializeApp(firebaseConfig);
 // For more information on how to access Firebase in your project,
