@@ -60,7 +60,7 @@ const SalesScreen = ({ route }) => {
     const selectedProductDetails = products.find((product) => product.name === selectedProduct);
     const { stockQuantity, buyingPrice, id, name } = selectedProductDetails;
 
-    if (quantity > stockQuantity) {
+    if (quantity > parseInt(stockQuantity)) {
       alert('Insufficient stock.');
       return;
     }
